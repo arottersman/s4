@@ -1,0 +1,22 @@
+version: '3'
+services:
+    redis:
+        image: "redis:4.0.8-alpine"
+        ports:
+            - "6379:6379"
+    api-build:
+        build: .
+        volumes:
+            - ./src/s4:/go/src/s4
+            - ./bin:/go/bin
+        working_dir: /go/src/s4
+        command: "/bin/sh -c 'go build && mv s4 /go/bin'"
+
+    api:
+        image: "iron/go"
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./bin:/usr/bin
+        working_dir: /usr/bin
+        command: "/usr/bin/s4"
