@@ -1,6 +1,15 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+func init() {
+	db := Connect()
+	db.FlushDB()
+	db.Close()
+}
 
 func TestSetGetGoodSimpleValues(t *testing.T) {
 	db := Connect()
@@ -8,6 +17,9 @@ func TestSetGetGoodSimpleValues(t *testing.T) {
 		Item{Key: "Dog", Value: "Pepper"},
 		Item{Key: "", Value: "Empty Key Okay"},
 		Item{Key: "Empty Value Okay", Value: ""},
+		Item{Key: "Int values", Value: 123},
+		Item{Key: "Float values", Value: 123.456},
+		Item{Key: "Negative int values", Value: -123},
 		Item{Key: "Numeric values", Value: 123},
 	}
 
@@ -19,18 +31,19 @@ func TestSetGetGoodSimpleValues(t *testing.T) {
 	}
 	for _, item := range goodItems {
 		value, err := db.GetValue(item.Key)
-		if value != item.Value || err != nil {
+		itemValueStr := fmt.Sprintf("%v", item.Value)
+		if value != itemValueStr || err != nil {
 			t.Error(err)
 		}
 	}
-	db.FlushAll()
+	db.FlushDB()
 	db.Close()
 }
 
 func TestGetMissingKey(t *testing.T) {
 	db := Connect()
 	value, err := db.GetValue("there is nothing in the db")
-	if value != nil && err != nil {
+	if value != "" && err != nil {
 		t.Error(err)
 	}
 	db.Close()

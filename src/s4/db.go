@@ -3,16 +3,16 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/go-redis/redis"
 )
 
-// DB is a wrapper interface, stub it out in tests of other packages
 type DB interface {
-	GetValue(key string) (interface{}, error)
+	GetValue(key string) (string, error)
 	SetValue(item Item) error
 	Close() error
-	FlushAll() error
+	FlushDB() error
 }
 
 type RedisDB struct {
@@ -33,18 +33,31 @@ func Connect() DB {
 	return &RedisDB{Client: client}
 }
 
-func (db *RedisDB) GetValue(key string) (interface{}, error) {
-	return nil, nil
+func (db *RedisDB) GetValue(key string) (string, error) {
+	value, err := db.Client.Get(key).Result()
+	if err == redis.Nil {
+		// Key does not exist
+		return "", nil
+	} else if err != nil {
+		return "", err
+	}
+	return value, nil
 }
 
 func (db *RedisDB) SetValue(item Item) error {
+	noExpiration := time.Duration(0)
+	err := db.Client.Set(item.Key, item.Value, noExpiration).Err()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (db *RedisDB) Close() error {
-	return nil
+	return db.Client.Close()
 }
 
-func (db *RedisDB) FlushAll() error {
-	return nil
+func (db *RedisDB) FlushDB() error {
+	return db.Client.FlushDB().Err()
 }
