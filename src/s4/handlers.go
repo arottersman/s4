@@ -1,8 +1,8 @@
 package main
 
 import (
-    "net/http"
-    "fmt"
+	"fmt"
+	"net/http"
 )
 
 func SetItem(w http.ResponseWriter, r *http.Request) {
