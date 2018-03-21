@@ -8,6 +8,12 @@ import (
 	"github.com/go-redis/redis"
 )
 
+const KeyNotFound = DBError("S4: Key Not Found")
+
+type DBError string
+
+func (e DBError) Error() string { return string(e) }
+
 type DB interface {
 	GetValue(key string) (string, error)
 	SetValue(item Item) error
@@ -37,7 +43,7 @@ func (db *redisDB) GetValue(key string) (string, error) {
 	value, err := db.Client.Get(key).Result()
 	if err == redis.Nil {
 		// Key does not exist
-		return "", nil
+		return "", KeyNotFound
 	} else if err != nil {
 		return "", err
 	}

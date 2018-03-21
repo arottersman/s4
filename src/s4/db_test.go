@@ -42,8 +42,8 @@ func TestSetGetGoodSimpleValues(t *testing.T) {
 
 func TestGetMissingKey(t *testing.T) {
 	db := Connect()
-	value, err := db.GetValue("there is nothing in the db")
-	if value != "" && err != nil {
+	_, err := db.GetValue("there is nothing in the db")
+	if err != KeyNotFound {
 		t.Error(err)
 	}
 	db.Close()
