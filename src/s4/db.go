@@ -15,7 +15,7 @@ type DB interface {
 	FlushDB() error
 }
 
-type RedisDB struct {
+type redisDB struct {
 	*redis.Client
 }
 
@@ -30,10 +30,10 @@ func Connect() DB {
 		log.Fatal(err)
 	}
 
-	return &RedisDB{Client: client}
+	return &redisDB{Client: client}
 }
 
-func (db *RedisDB) GetValue(key string) (string, error) {
+func (db *redisDB) GetValue(key string) (string, error) {
 	value, err := db.Client.Get(key).Result()
 	if err == redis.Nil {
 		// Key does not exist
@@ -44,7 +44,7 @@ func (db *RedisDB) GetValue(key string) (string, error) {
 	return value, nil
 }
 
-func (db *RedisDB) SetValue(item Item) error {
+func (db *redisDB) SetValue(item Item) error {
 	noExpiration := time.Duration(0)
 	err := db.Client.Set(item.Key, item.Value, noExpiration).Err()
 	if err != nil {
@@ -54,10 +54,10 @@ func (db *RedisDB) SetValue(item Item) error {
 	return nil
 }
 
-func (db *RedisDB) Close() error {
+func (db *redisDB) Close() error {
 	return db.Client.Close()
 }
 
-func (db *RedisDB) FlushDB() error {
+func (db *redisDB) FlushDB() error {
 	return db.Client.FlushDB().Err()
 }
