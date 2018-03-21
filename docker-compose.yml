@@ -4,6 +4,10 @@ services:
         image: "redis:4.0.8-alpine"
         ports:
             - "6379:6379"
+    test-redis:
+        image: "redis:4.0.8-alpine"
+        ports:
+            - "6379:6379"
     api-build:
         build: .
         volumes:
@@ -20,3 +24,5 @@ services:
             - ./bin:/usr/bin
         working_dir: /usr/bin
         command: "/usr/bin/s4"
+        links:
+            - "redis"
