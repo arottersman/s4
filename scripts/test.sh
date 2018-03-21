@@ -7,4 +7,4 @@ docker-compose run --rm \
         api-build \
         go test
 
-docker-compose rm test-redis
+docker-compose stop test-redis

@@ -15,7 +15,6 @@ services:
             - ./bin:/go/bin
         working_dir: /go/src/s4
         command: "/bin/sh -c 'go build && mv s4 /go/bin'"
-
     api:
         image: "iron/go"
         ports:
@@ -26,3 +25,5 @@ services:
         command: "/usr/bin/s4"
         links:
             - "redis"
+        environment:
+            - REDIS_URL=redis:6379
