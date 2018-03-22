@@ -11,13 +11,13 @@ var routes = Routes{
 		"SetItem",
 		"PUT",
 		"/items",
-		SetItem,
+		SetItemHandler,
 	},
 	Route{
 		"GetItem",
 		"GET",
 		"/items/{key}",
-		GetItem,
+		GetItemHandler,
 	},
 }
 
