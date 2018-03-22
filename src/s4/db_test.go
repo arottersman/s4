@@ -32,7 +32,10 @@ func TestSetGetGoodSimpleValues(t *testing.T) {
 	for _, item := range goodItems {
 		value, err := db.GetValue(item.Key)
 		itemValueStr := fmt.Sprintf("%v", item.Value)
-		if value != itemValueStr || err != nil {
+		if value != itemValueStr {
+			t.Error("Value did not match expected")
+		}
+		if err != nil {
 			t.Error(err)
 		}
 	}
@@ -44,7 +47,7 @@ func TestGetMissingKey(t *testing.T) {
 	db := Connect()
 	_, err := db.GetValue("there is nothing in the db")
 	if err != KeyNotFound {
-		t.Error(err)
+		t.Error("Expected KeyNotFound error, got: ", err)
 	}
 	db.Close()
 }
