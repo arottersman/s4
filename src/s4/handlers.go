@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -49,6 +48,6 @@ func GetItemHandler(w http.ResponseWriter, r *http.Request) {
 
 	SetApplicationJson(w.Header())
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, value)
+	json.NewEncoder(w).Encode(Item{Key: key, Value: value})
 	return
 }

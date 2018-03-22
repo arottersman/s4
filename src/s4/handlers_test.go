@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -68,7 +69,8 @@ func TestSetHandler(t *testing.T) {
 }
 
 func TestGetHandler(t *testing.T) {
-	goodDB := &mockDB{Item: Item{Key: "ShouldBeOkay", Value: "Yes!"}}
+	item := Item{Key: "ShouldBeOkay", Value: "Yes!"}
+	goodDB := &mockDB{Item: item}
 	InitMockDB(goodDB)
 
 	req, _ := http.NewRequest("GET", "/items/ShouldBeOkay", nil)
@@ -79,8 +81,10 @@ func TestGetHandler(t *testing.T) {
 	if statusCode != http.StatusOK {
 		t.Error("Get request failed with status code:", statusCode)
 	}
-	if res.Body.String() != "Yes!" {
-		t.Error("Did not return proper value for key. Got", res.Body.String())
+
+	expectedResponseBody, _ := json.Marshal(item)
+	if strings.TrimSpace(res.Body.String()) != string(expectedResponseBody) {
+		t.Error("Did not return proper value for key. Got", res.Body.String(), "Expected", string(expectedResponseBody))
 	}
 }
 
